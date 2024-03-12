@@ -5,16 +5,26 @@ import 'package:tic_tac_toe/Screens/index.dart';
 import 'package:tic_tac_toe/Utils/constants/index.dart';
 
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+   final String player1Name;
+  final String player2Name;
+
+  const GameScreen({Key? key, required this.player1Name, required this.player2Name}) : super(key: key);
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
+    String currentPlayer = ''; 
   List<String> symbols = ['X', 'O'];
   int currentSymbolIndex = 0;
   List<String?> gridValues = List.filled(9, null);
+
+    @override
+  void initState() {
+    super.initState();
+    currentPlayer = widget.player1Name; 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +117,8 @@ class _GameScreenState extends State<GameScreen> {
                         gridValues[index] = symbols[currentSymbolIndex];
                         currentSymbolIndex =
                             (currentSymbolIndex + 1) % symbols.length;
+                        // Check for winner or draw
+                        checkGameStatus();
                       }
                       setState(() {});
                     },
@@ -135,9 +147,122 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  void resetGame() {
+  resetGame() {
     gridValues = List.filled(9, null);
     currentSymbolIndex = 0;
     setState(() {});
+  }
+
+  checkGameStatus() {
+    // Check rows
+    for (int i = 0; i < 9; i += 3) {
+      if (gridValues[i] != null &&
+          gridValues[i] == gridValues[i + 1] &&
+          gridValues[i] == gridValues[i + 2]) {
+        showWinnerDialog(gridValues[i]!);
+        return;
+      }
+    }
+
+    // Check columns
+    for (int i = 0; i < 3; i++) {
+      if (gridValues[i] != null &&
+          gridValues[i] == gridValues[i + 3] &&
+          gridValues[i] == gridValues[i + 6]) {
+        showWinnerDialog(gridValues[i]!);
+        return;
+      }
+    }
+
+    // Check diagonals
+    if (gridValues[0] != null &&
+        gridValues[0] == gridValues[4] &&
+        gridValues[0] == gridValues[8]) {
+      showWinnerDialog(gridValues[0]!);
+      return;
+    }
+    if (gridValues[2] != null &&
+        gridValues[2] == gridValues[4] &&
+        gridValues[2] == gridValues[6]) {
+      showWinnerDialog(gridValues[2]!);
+      return;
+    }
+
+    // Check for draw
+    bool isDraw = true;
+    for (int i = 0; i < 9; i++) {
+      if (gridValues[i] == null) {
+        isDraw = false;
+        break;
+      }
+    }
+    if (isDraw) {
+      showDrawDialog();
+    }
+  }
+
+ showWinnerDialog(String symbol) {
+    String winnerName = (symbol == 'X') ? widget.player1Name : widget.player2Name;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('$winnerName wins!'), 
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                resetGame();
+              },
+              child: const Text('Play Again'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WelcomePage(),
+                  ),
+                );
+              },
+              child: const Text('Quit Game'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  showDrawDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('It\'s a draw!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                resetGame();
+              },
+              child: const Text('Play Again'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const WelcomePage(),
+                  ),
+                );
+              },
+              child: const Text('Quit Game'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
