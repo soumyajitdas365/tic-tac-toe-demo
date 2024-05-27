@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tic_tac_toe/Screens/index.dart';
 import 'package:tic_tac_toe/Utils/constants/index.dart';
 
@@ -51,7 +50,8 @@ class _WelcomePageState extends State<WelcomePage> {
               height: 30 * heightF,
             ),
             Visibility(
-              visible: player1Controller.text.isNotEmpty && player2Controller.text.isNotEmpty,
+              visible: player1Controller.text.isNotEmpty &&
+                  player2Controller.text.isNotEmpty,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(
