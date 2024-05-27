@@ -5,25 +5,27 @@ import 'package:tic_tac_toe/Screens/index.dart';
 import 'package:tic_tac_toe/Utils/constants/index.dart';
 
 class GameScreen extends StatefulWidget {
-   final String player1Name;
+  final String player1Name;
   final String player2Name;
 
-  const GameScreen({Key? key, required this.player1Name, required this.player2Name}) : super(key: key);
+  const GameScreen(
+      {Key? key, required this.player1Name, required this.player2Name})
+      : super(key: key);
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
-    String currentPlayer = ''; 
+  String currentPlayer = '';
   List<String> symbols = ['X', 'O'];
   int currentSymbolIndex = 0;
   List<String?> gridValues = List.filled(9, null);
 
-    @override
+  @override
   void initState() {
     super.initState();
-    currentPlayer = widget.player1Name; 
+    currentPlayer = widget.player1Name;
   }
 
   @override
@@ -201,13 +203,14 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
- showWinnerDialog(String symbol) {
-    String winnerName = (symbol == 'X') ? widget.player1Name : widget.player2Name;
+  showWinnerDialog(String symbol) {
+    String winnerName =
+        (symbol == 'X') ? widget.player1Name : widget.player2Name;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('$winnerName wins!'), 
+          title: Text('$winnerName wins!'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
